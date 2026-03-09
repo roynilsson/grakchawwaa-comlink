@@ -1,0 +1,26 @@
+services:
+  comlink:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: grakchawwaa-comlink
+    ports:
+      - "3500:3000"
+    env_file:
+      - .env
+    networks:
+      - grakchawwaa-network
+    restart: unless-stopped
+
+  asset-extractor:
+    image: ghcr.io/swgoh-utils/swgoh-ae2:latest
+    container_name: grakchawwaa-asset-extractor
+    ports:
+      - "3501:8080"
+    networks:
+      - grakchawwaa-network
+    restart: unless-stopped
+
+networks:
+  grakchawwaa-network:
+    external: true

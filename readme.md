@@ -1,3 +1,57 @@
+# SWGOH Comlink & Asset Services
+
+This repository provides SWGOH game data services for local development.
+
+## Services
+
+| Service | Port | Description |
+|---------|------|-------------|
+| Comlink | 3500 | SWGOH game data API (players, guilds, metadata) |
+| Asset Extractor | 3501 | Character/ship portrait images |
+
+## Local Development
+
+```bash
+docker compose up -d
+```
+
+### Comlink API
+
+Fetch game data like player profiles, guild info, and metadata:
+
+```bash
+# Get metadata (includes asset version)
+curl -X POST http://localhost:3500/metadata -H "Content-Type: application/json" -d '{"payload":{}}'
+
+# Get player by ally code
+curl -X POST http://localhost:3500/player -H "Content-Type: application/json" \
+  -d '{"payload":{"allyCode":"123456789"}}'
+```
+
+### Asset Extractor API
+
+Fetch character and ship portrait images:
+
+```bash
+# Get asset version from comlink metadata first
+ASSET_VERSION=$(curl -s -X POST http://localhost:3500/metadata \
+  -H "Content-Type: application/json" -d '{"payload":{}}' | jq -r '.assetVersion')
+
+# Fetch a character portrait (128x128 PNG)
+curl "http://localhost:3501/Asset/single?version=${ASSET_VERSION}&assetName=charui_vader" -o vader.png
+
+# Fetch a ship portrait (256x256 PNG)
+curl "http://localhost:3501/Asset/single?version=${ASSET_VERSION}&assetName=charui_chimaera" -o chimaera.png
+```
+
+**Asset naming:** Strip the `tex.` prefix from the game's `thumbnailName` field.
+- `tex.charui_vader` → `charui_vader`
+- `tex.charui_chimaera` → `charui_chimaera`
+
+Swagger docs available at: http://localhost:3501/swagger
+
+---
+
 # Deploying to Heroku with Docker
 
 This project uses a custom Dockerfile and is automatically deployed to Heroku using GitHub Actions.
