@@ -8,7 +8,8 @@ This service provides a REST API to fetch live game data from SWGOH servers:
 - Player profiles by ally code
 - Guild rosters and member data
 - Game metadata (version, assets)
-- Character/ship portrait images
+- Character/ship game data
+- Character/ship portrait images (via Asset Extractor)
 
 Used by the backend for ticket checks, guild sync, and unit data.
 
